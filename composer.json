@@ -1,0 +1,15 @@
+{
+    "name": "plughacker/core-plug-magento2-module",
+    "license": "MIT",
+    "version": "1.0.0",
+    "type": "magento2-module",
+    "description": "Magento 2 Module Core Plug",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "PlugHacker\\PlugCore\\": ""
+        }
+    }
+}
