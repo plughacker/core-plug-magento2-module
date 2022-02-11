@@ -1,5 +1,5 @@
 {
-    "name": "plughacker/core-plug-magento2-module",
+    "name": "plughacker/magento2-core-module",
     "license": "MIT",
     "version": "1.0.0",
     "type": "magento2-module",
