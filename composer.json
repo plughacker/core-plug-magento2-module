@@ -4,6 +4,7 @@
     "version": "1.0.0",
     "type": "magento2-module",
     "description": "Magento 2 Module Core Plug",
+    "minimum-stability": "dev",
     "autoload": {
         "files": [
             "registration.php"
