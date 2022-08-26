@@ -39,6 +39,9 @@ final class PaymentFactory
     /** @var string */
     private $boletoExpirationDate;
 
+    /** @var int */
+    private $boletoDueDays;
+
     public function __construct()
     {
         $this->primitiveFactories = [
@@ -52,6 +55,7 @@ final class PaymentFactory
         $this->boletoBank = BoletoBank::itau();
         $this->boletoInstructions = $this->moduleConfig->getBoletoInstructions();
         $this->boletoExpirationDate = $this->moduleConfig->getBoletoExpirationDate();
+        $this->boletoDueDays = $this->moduleConfig->getBoletoDueDays();
     }
 
     /**
@@ -179,8 +183,12 @@ final class PaymentFactory
             $payment->setBank($this->boletoBank);
             $payment->setInstructions($this->boletoInstructions);
             $payment->setInstructions('Instruções para pagamento do boleto');
-            $boletoExpirationDate = \Date('Y-m-d', strtotime("+".$this->boletoExpirationDate." days"));
-            $payment->setExpiresDate('2022-12-31');
+
+            if ($this->boletoDueDays == null) {
+                $this->boletoDueDays = 5;
+            }
+            $boletoExpirationDate = \Date('Y-m-d', strtotime("+".$this->boletoDueDays." days"));
+            $payment->setExpiresDate($boletoExpirationDate);
 
             $payments[] = $payment;
         }

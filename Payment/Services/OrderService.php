@@ -28,9 +28,9 @@ class OrderService
         $transaction = $charge->getTransactionRequests();
         $postData = $transaction->getPostData();
         $data = json_decode($postData->tran_data, true);
-        if (!empty($data['qr_code']) && !empty($data['qr_code_url'])) {
-            $qrCodeInfo['qr_code'] = $data['qr_code'];
-            $qrCodeInfo['qr_code_url'] = $data['qr_code_url'];
+        if (!empty($data['qrCodeData']) && !empty($data['qrCodeImageUrl'])) {
+            $qrCodeInfo['qrCodeData'] = $data['qrCodeData'];
+            $qrCodeInfo['qrCodeImageUrl'] = $data['qrCodeImageUrl'];
             return $qrCodeInfo;
         }
 
