@@ -53,13 +53,27 @@ final class TransactionRepository extends AbstractRepository
         $transactionTable = $this->db->getTable(AbstractDatabaseDecorator::TABLE_TRANSACTION);
 
         $simpleObject = json_decode(json_encode($object));
-
+        if ($simpleObject->type == 'boleto') {
+            if ($object->getPostData()->barcodeImageUrl) {
+                $simpleObject->boletoUrl = $object->getPostData()->barcodeImageUrl;
+            }
+        }
         $cardData = json_encode($simpleObject->cardData);
         $cardData = StringFunctionsHelper::removeLineBreaks($cardData);
-
-        $transactionData = (new StringFunctionsHelper)->cleanStrToDb(
-            json_encode($object->getPostData())
-        );
+        if ($simpleObject->type == 'pix') {
+            $transactionData = (new StringFunctionsHelper)->cleanStrToDb(
+                json_encode($object->getPostData())
+            );
+            $data = json_decode($transactionData);
+            if ($object->getPostData()->qrCodeImageUrl) {
+                $data->qrCodeImageUrl = $object->getPostData()->qrCodeImageUrl;
+                $transactionData = json_encode($data);
+            }
+        } else {
+            $transactionData = (new StringFunctionsHelper)->cleanStrToDb(
+                json_encode($object->getPostData())
+            );
+        }
 
         $query = "
           INSERT INTO

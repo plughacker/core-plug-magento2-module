@@ -29,9 +29,15 @@ use PlugHacker\PlugCore\Kernel\ValueObjects\Id\SubscriptionId;
 use PlugHacker\PlugCore\Recurrence\Aggregates\Invoice;
 use PlugHacker\PlugCore\Recurrence\Aggregates\Subscription;
 use PlugHacker\PlugCore\Recurrence\Factories\SubscriptionFactory;
+use PlugHacker\PlugPagamentos\Concrete\Magento2CoreSetup;
 
 class APIService
 {
+    public $clientId;
+    public $merchantId;
+    public $secretKey;
+    public $isTestMode;
+
     /**
      * @var PlugAPIClient
      */
@@ -57,8 +63,13 @@ class APIService
      */
     private $webhookCreationService;
 
-    public function __construct()
+    public function __construct($clientId = null, $merchantId = null, $secretKey = null, $isTestMode = null)
     {
+        $this->clientId = $clientId;
+        $this->merchantId = $merchantId;
+        $this->secretKey = $secretKey;
+        $this->isTestMode = $isTestMode;
+
         $this->apiClient = $this->getPlugApiClient();
         $this->logService = new OrderLogService(2);
         $this->configInfoService = new ConfigInfoRetrieverService();
@@ -181,7 +192,13 @@ class APIService
         $endpoint = $this->getAPIBaseEndpoint();
 
         $webhookRequest = $webhook->convertToSDKRequest();
-        $clientId = MPSetup::getModuleConfiguration()->getClientId()->getValue();
+        MPSetup::bootstrap();
+        $moduleConfig = MPSetup::getModuleConfiguration();
+        $clientId = $this->clientId;
+        if ($moduleConfig->getClientId()) {
+            $clientId = $moduleConfig->getClientId()->getValue();
+        }
+
         $message = 'Create webhook Request from ' . $clientId . ' to ' . $endpoint;
         $this->logService->orderInfo(
             $clientId,
@@ -257,10 +274,15 @@ class APIService
 
     private function getPlugApiClient()
     {
+        MPSetup::bootstrap();
         $config = MPSetup::getModuleConfiguration();
         $clientId = null;
         if ($config->getClientId() != null) {
             $clientId = $config->getClientId()->getValue();
+        }
+
+        if ($clientId == null) {
+            $clientId = $this->clientId;
         }
 
         $secretKey = null;
@@ -268,11 +290,22 @@ class APIService
             $secretKey = $config->getSecretKey()->getValue();
         }
 
+        if ($secretKey == null) {
+            $secretKey = $this->secretKey;
+        }
+
         return new PlugAPIClient($clientId, $secretKey);
     }
 
     private function getAPIBaseEndpoint()
     {
+        if ($this->isTestMode != null) {
+            if ($this->isTestMode) {
+                return Configuration::$TEST_BASEURI;
+            }
+            return Configuration::$BASEURI;
+        }
+
         $config = MPSetup::getModuleConfiguration();
         if ($config->isTestMode()) {
             return Configuration::$TEST_BASEURI;
