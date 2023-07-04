@@ -65,7 +65,7 @@ final class CustomerDocument extends AbstractEntity implements ConvertibleToSDKR
         $this->country = $country;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $obj = new \stdClass();
         $obj->number = $this->number;

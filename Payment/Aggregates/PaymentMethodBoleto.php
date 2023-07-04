@@ -68,7 +68,7 @@ final class PaymentMethodBoleto extends AbstractEntity implements ConvertibleToS
         $this->instructions = $instructions;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $obj = new \stdClass();
         $obj->paymentType = $this->paymentType;

@@ -49,7 +49,7 @@ final class PaymentMethod extends AbstractEntity implements ConvertibleToSDKRequ
         $this->installments = $installments;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $obj = new \stdClass();
         $obj->paymentType = $this->paymentType;
