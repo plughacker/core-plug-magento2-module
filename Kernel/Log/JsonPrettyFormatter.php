@@ -7,7 +7,7 @@ use PlugHacker\PlugCore\Kernel\Factories\LogObjectFactory;
 
 class JsonPrettyFormatter extends JsonFormatter
 {
-    public function format(array $record)
+    public function format(array $record): string
     {
         $logObjectFactory = new LogObjectFactory();
         $logObject = $logObjectFactory->createFromArray($record['context']);
