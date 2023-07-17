@@ -48,6 +48,11 @@ final class OrderHandler extends AbstractResponseHandler
         return $this->$statusHandler($createdOrder);
     }
 
+    private function handleOrderStatusPreAuthorized(Order $order)
+    {
+        $this->handleOrderStatusProcessing($order);
+    }
+
     private function handleOrderStatusProcessing(Order $order)
     {
         $platformOrder = $order->getPlatformOrder();
@@ -113,6 +118,11 @@ final class OrderHandler extends AbstractResponseHandler
         );
 
         return true;
+    }
+
+    private function handleOrderStatusAuthorized(Order $order)
+    {
+        $this->handleOrderStatusPaid($order);
     }
 
     /**

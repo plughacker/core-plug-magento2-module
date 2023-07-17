@@ -8,6 +8,8 @@ final class OrderStatus extends AbstractValueObject
 {
     const PAID = 'paid';
     const PENDING = 'pending';
+    const PRE_AUTHORIZED = 'pre_authorized';
+    const AUTHORIZED = 'authorized';
     const PROCESSING = 'processing';
     const CANCELED = 'canceled';
     const FAILED = 'failed';
@@ -43,14 +45,19 @@ final class OrderStatus extends AbstractValueObject
         return new self(self::PENDING);
     }
 
+    static public function pre_authorized()
+    {
+        return new self(self::PRE_AUTHORIZED);
+    }
+
     static public function preAuthorized()
     {
-        return new self(self::PROCESSING);
+        return new self(self::PRE_AUTHORIZED);
     }
 
     static public function authorized()
     {
-        return new self(self::PAID);
+        return new self(self::AUTHORIZED);
     }
 
     static public function pendingPayment()

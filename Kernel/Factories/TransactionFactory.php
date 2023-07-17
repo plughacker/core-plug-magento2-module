@@ -17,9 +17,17 @@ class TransactionFactory implements FactoryInterface
     public function createFromPostData($postData)
     {
         $transaction = new Transaction;
-        $transaction->setPlugId(new TransactionId($postData['id']));
 
-        $baseStatus = explode('_', $postData['requestStatus']);
+        if (isset($postData['webhook'])) {
+            $transactionRequest = array_last($postData['transactionRequests']);
+
+            $transaction->setId($postData['orderId']);
+            $transaction->setPlugId(new TransactionId($transactionRequest['id']));
+        } else {
+            $transaction->setPlugId(new TransactionId($postData['id']));
+        }
+
+        $baseStatus = explode('_', $postData['status']);
         $status = $baseStatus[0];
         for ($i = 1; $i < count($baseStatus); $i++) {
             $status .= ucfirst(($baseStatus[$i]));
@@ -33,10 +41,18 @@ class TransactionFactory implements FactoryInterface
         }
         $transaction->setStatus(TransactionStatus::$status());
 
-        $baseType = explode('_', $postData['transaction_type']);
-        $type = $baseType[0];
-        for ($i = 1; $i < count($baseType); $i++) {
-            $type .= ucfirst(($baseType[$i]));
+        $type = $postData['paymentType'] ?? '';
+
+        if (empty($type)) {
+            $type = 'credit';
+
+            $transactionRequest = array_last($postData['transactionRequests']);
+
+            if ($transactionRequest['boleto']) {
+                $type = 'boleto';
+            } elseif ($transactionRequest['pix']) {
+                $type = 'pix';
+            }
         }
 
         if (!method_exists(TransactionType::class, $type)) {

@@ -6,7 +6,6 @@ use PlugHacker\PlugCore\Kernel\Abstractions\AbstractEntity;
 use PlugHacker\PlugCore\Kernel\Aggregates\Charge;
 use PlugHacker\PlugCore\Kernel\Exceptions\InvalidParamException;
 use PlugHacker\PlugCore\Kernel\Interfaces\FactoryInterface;
-//use PlugHacker\PlugCore\Kernel\Factories\TransactionFactory;
 use PlugHacker\PlugCore\Kernel\ValueObjects\ChargeStatus;
 use PlugHacker\PlugCore\Kernel\ValueObjects\Id\ChargeId;
 use PlugHacker\PlugCore\Kernel\ValueObjects\Id\CustomerId;
@@ -29,7 +28,14 @@ class ChargeFactory implements FactoryInterface
     public function createFromPostData($postData)
     {
         $charge = new Charge;
-        $status = $postData['requestType'];
+
+        $baseStatus = explode('_', $postData['status']);
+
+        $status = $baseStatus[0];
+
+        for ($i = 1; $i < count($baseStatus); $i++) {
+            $status .= ucfirst(($baseStatus[$i]));
+        }
 
         $charge->setPlugId(new ChargeId($postData['id']));
         $charge->setCode($postData['authorizationCode']);

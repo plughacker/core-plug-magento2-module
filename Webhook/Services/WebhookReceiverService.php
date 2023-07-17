@@ -44,7 +44,7 @@ class WebhookReceiverService
             $return = $handlerService->handle($webhook);
             $repository->save($webhook);
             $logService->info(
-                "Webhook handled successfuly",
+                "Webhook handled successfully",
                 (object)[
                     'id' => $webhook->getId(),
                     'plugId' => $webhook->getPlugId(),

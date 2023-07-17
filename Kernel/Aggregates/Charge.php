@@ -406,7 +406,7 @@ final class Charge extends AbstractEntity implements ChargeInterface
         ];
 
         foreach ($transactions as $transaction) {
-            if ($transaction->getStatus()->equals(TransactionStatus::captured())) {
+            if ($transaction->getStatus()->equals(TransactionStatus::capture())) {
                 $NSU['captured'] = $transaction->getAcquirerNsu();
                 continue;
             }

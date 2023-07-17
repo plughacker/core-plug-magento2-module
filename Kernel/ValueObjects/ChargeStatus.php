@@ -8,6 +8,9 @@ final class ChargeStatus extends AbstractValueObject
 {
     const PAID = 'paid';
     const PENDING = 'pending';
+    const AUTHORIZED = 'authorized';
+    const PRE_AUTHORIZED = 'pre_authorized';
+    const CAPTURE = 'capture';
     const CANCELED = 'canceled';
     const PROCESSING = 'processing';
     const FAILED = 'failed';
@@ -38,7 +41,22 @@ final class ChargeStatus extends AbstractValueObject
 
     static public function authorization()
     {
-        return new self(self::PAID);
+        return new self(self::AUTHORIZATION);
+    }
+
+    static public function authorized()
+    {
+        return new self(self::AUTHORIZED);
+    }
+
+    static public function pre_authorized()
+    {
+        return new self(self::PRE_AUTHORIZED);
+    }
+
+    static public function preAuthorized()
+    {
+        return new self(self::PRE_AUTHORIZED);
     }
 
     static public function pending()
