@@ -4,6 +4,7 @@ namespace PlugHacker\PlugCore\Recurrence\Services;
 
 use PlugHacker\PlugAPILib\Models\GetPlanItemResponse;
 use PlugHacker\PlugAPILib\PlugAPIClient;
+use PlugHacker\PlugCore\Kernel\Aggregates\Configuration;
 use PlugHacker\PlugCore\Kernel\Services\LogService;
 use PlugHacker\PlugCore\Kernel\ValueObjects\AbstractValidString;
 use PlugHacker\PlugCore\Recurrence\Aggregates\Plan;
@@ -20,18 +21,16 @@ class PlanService
     {
         Magento2CoreSetup::bootstrap();
 
+        /** @var Configuration $config */
         $config = Magento2CoreSetup::getModuleConfiguration();
 
-        $secretKey = null;
-        if ($config->getSecretKey() != null) {
-            $secretKey = $config->getSecretKey()->getValue();
-        }
+        $clientId = $config->getClientId()->getValue();
 
-        $password = '';
+        $secretKey = $config->getSecretKey()->getValue();
 
         \PlugHacker\PlugAPILib\Configuration::$basicAuthPassword = '';
 
-        $this->plugApi = new PlugAPIClient($secretKey, $password);
+        $this->plugApi = new PlugAPIClient($clientId, $secretKey);
     }
 
     /**
