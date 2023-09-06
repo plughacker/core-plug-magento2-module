@@ -48,9 +48,9 @@ class TransactionFactory implements FactoryInterface
 
             $transactionRequest = array_last($postData['transactionRequests']);
 
-            if ($transactionRequest['boleto']) {
+            if (isset($transactionRequest['boleto']) && $transactionRequest['boleto']) {
                 $type = 'boleto';
-            } elseif ($transactionRequest['pix']) {
+            } elseif (isset($transactionRequest['pix']) && $transactionRequest['pix']) {
                 $type = 'pix';
             }
         }
