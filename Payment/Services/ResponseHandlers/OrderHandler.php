@@ -29,23 +29,30 @@ final class OrderHandler extends AbstractResponseHandler
      * @param Order $createdOrder
      * @return mixed
      */
-    public function handle($createdOrder, PaymentOrder $paymentOrder = null)
+    public function handle($response, PaymentOrder $paymentOrder = null)
     {
-        $orderStatus = ucfirst($createdOrder->getStatus()->getStatus());
+        $baseOrderStatus = explode('_', $response->getStatus()->getStatus());
+
+        $orderStatus = $baseOrderStatus[0];
+
+        for ($i = 1, $iMax = count($baseOrderStatus); $i < $iMax; $i++) {
+            $orderStatus .= ucfirst(($baseOrderStatus[$i]));
+        }
+
         $statusHandler = 'handleOrderStatus' . $orderStatus;
 
         $this->logService->orderInfo(
-            $createdOrder->getCode(),
+            $response->getCode(),
             "Handling order status: $orderStatus"
         );
 
         $orderRepository = new OrderRepository();
-        $orderRepository->save($createdOrder);
+        $orderRepository->save($response);
 
         /*$customerService = new CustomerService();
-        $customerService->saveCustomer($createdOrder->getCustomer());*/
+        $customerService->saveCustomer($response->getCustomer());*/
 
-        return $this->$statusHandler($createdOrder);
+        return $this->$statusHandler($response);
     }
 
     private function handleOrderStatusPreAuthorized(Order $order)
