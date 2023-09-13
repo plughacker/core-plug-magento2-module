@@ -33,7 +33,7 @@ class OrderFactory implements FactoryInterface
 
         $status = $baseStatus[0];
 
-        for ($i = 1; $i < count($baseStatus); $i++) {
+        for ($i = 1, $iMax = count($baseStatus); $i < $iMax; $i++) {
             $status .= ucfirst(($baseStatus[$i]));
         }
 
@@ -147,7 +147,7 @@ class OrderFactory implements FactoryInterface
 
         $baseStatus = explode('_', $platformOrder->getStatus());
         $status = $baseStatus[0];
-        for ($i = 1; $i < count($baseStatus); $i++) {
+        for ($i = 1, $iMax = count($baseStatus); $i < $iMax; $i++) {
             $status .= ucfirst(($baseStatus[$i]));
         }
 

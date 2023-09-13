@@ -45,11 +45,6 @@ final class OrderStatus extends AbstractValueObject
         return new self(self::PENDING);
     }
 
-    static public function pre_authorized()
-    {
-        return new self(self::PRE_AUTHORIZED);
-    }
-
     static public function preAuthorized()
     {
         return new self(self::PRE_AUTHORIZED);

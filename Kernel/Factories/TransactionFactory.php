@@ -29,7 +29,7 @@ class TransactionFactory implements FactoryInterface
 
         $baseStatus = explode('_', $postData['status']);
         $status = $baseStatus[0];
-        for ($i = 1; $i < count($baseStatus); $i++) {
+        for ($i = 1, $iMax = count($baseStatus); $i < $iMax; $i++) {
             $status .= ucfirst(($baseStatus[$i]));
         }
 
@@ -159,7 +159,7 @@ class TransactionFactory implements FactoryInterface
 
         $baseStatus = explode('_', $dbData['status']);
         $status = $baseStatus[0];
-        for ($i = 1; $i < count($baseStatus); $i++) {
+        for ($i = 1, $iMax = count($baseStatus); $i < $iMax; $i++) {
             $status .= ucfirst(($baseStatus[$i]));
         }
 
@@ -173,7 +173,7 @@ class TransactionFactory implements FactoryInterface
 
         $baseType = explode('_', $dbData['type']);
         $type = $baseType[0];
-        for ($i = 1; $i < count($baseType); $i++) {
+        for ($i = 1, $iMax = count($baseType); $i < $iMax; $i++) {
             $type .= ucfirst(($baseType[$i]));
         }
 

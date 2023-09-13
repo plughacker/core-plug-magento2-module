@@ -14,11 +14,21 @@ class TransactionHandlerService extends AbstractHandlerService
     {
         $orderRepository = new OrderRepository();
 
-        $this->order = $orderRepository->findByPlatformId($webhook->getEntity()->getId());;
+        $this->order = $orderRepository->findByPlatformId($webhook->getEntity()->getId());
     }
 
     protected function handleAuthorized($webhook)
     {
+        $orderHandler = new OrderHandler();
+
+        $status = $webhook->getEntity()->getStatus()->getStatus();
+
+        $this->order->setStatus(OrderStatus::$status());
+
+        $orderHandler->handle($this->order);
+    }
+
+    protected function handleCanceled($webhook) {
         $orderHandler = new OrderHandler();
 
         $status = $webhook->getEntity()->getStatus()->getStatus();

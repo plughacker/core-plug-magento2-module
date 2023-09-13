@@ -33,7 +33,7 @@ class ChargeFactory implements FactoryInterface
 
         $status = $baseStatus[0];
 
-        for ($i = 1; $i < count($baseStatus); $i++) {
+        for ($i = 1, $iMax = count($baseStatus); $i < $iMax; $i++) {
             $status .= ucfirst(($baseStatus[$i]));
         }
 
@@ -94,7 +94,14 @@ class ChargeFactory implements FactoryInterface
         $charge->setCanceledAmount($dbData['canceled_amount']);
         $charge->setRefundedAmount($dbData['refunded_amount']);
 
-        $status = $dbData['status'];
+        $baseStatus = explode('_', $dbData['status']);
+
+        $status = $baseStatus[0];
+
+        for ($i = 1, $iMax = count($baseStatus); $i < $iMax; $i++) {
+            $status .= ucfirst(($baseStatus[$i]));
+        }
+
         $charge->setStatus(ChargeStatus::$status());
 
         if (!empty($dbData['metadata'])) {

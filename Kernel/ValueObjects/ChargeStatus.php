@@ -17,6 +17,7 @@ final class ChargeStatus extends AbstractValueObject
 
     const UNDERPAID = 'underpaid';
     const OVERPAID = 'overpaid';
+    const VOIDED = 'voided';
 
     /**
      *
@@ -47,11 +48,6 @@ final class ChargeStatus extends AbstractValueObject
     static public function authorized()
     {
         return new self(self::AUTHORIZED);
-    }
-
-    static public function pre_authorized()
-    {
-        return new self(self::PRE_AUTHORIZED);
     }
 
     static public function preAuthorized()
