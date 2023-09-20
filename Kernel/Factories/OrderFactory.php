@@ -91,7 +91,14 @@ class OrderFactory implements FactoryInterface
         $order->setId($dbData['id']);
         $order->setPlugId(new OrderId($dbData['plug_id']));
 
-        $status = $dbData['status'];
+        $baseStatus = explode('_', $dbData['status']);
+
+        $status = $baseStatus[0];
+
+        for ($i = 1, $iMax = count($baseStatus); $i < $iMax; $i++) {
+            $status .= ucfirst(($baseStatus[$i]));
+        }
+
         try {
             OrderStatus::$status();
         } catch (Throwable $e) {

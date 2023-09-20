@@ -33,10 +33,10 @@ final class OrderHandler extends AbstractResponseHandler
     {
         $baseOrderStatus = explode('_', $response->getStatus()->getStatus());
 
-        $orderStatus = $baseOrderStatus[0];
+        $orderStatus = ucfirst($baseOrderStatus[0]);
 
         for ($i = 1, $iMax = count($baseOrderStatus); $i < $iMax; $i++) {
-            $orderStatus .= ucfirst(($baseOrderStatus[$i]));
+            $orderStatus .= ucfirst($baseOrderStatus[$i]);
         }
 
         $statusHandler = 'handleOrderStatus' . $orderStatus;
@@ -57,7 +57,7 @@ final class OrderHandler extends AbstractResponseHandler
 
     private function handleOrderStatusPreAuthorized(Order $order)
     {
-        $this->handleOrderStatusProcessing($order);
+        $this->handleOrderStatusPending($order);
     }
 
     private function handleOrderStatusProcessing(Order $order)
@@ -244,6 +244,29 @@ final class OrderHandler extends AbstractResponseHandler
         );
     }
 
+    private function createVoidTransaction(Order $order)
+    {
+        $dataServiceClass =
+            MPSetup::get(MPSetup::CONCRETE_DATA_SERVICE);
+
+        $this->logService->orderInfo(
+            $order->getCode(),
+            "Creating Void Transaction..."
+        );
+
+        /**
+         *
+         * @var AbstractDataService $dataService
+         */
+        $dataService = new $dataServiceClass();
+        $dataService->createVoidTransaction($order);
+
+        $this->logService->orderInfo(
+            $order->getCode(),
+            "Void Transaction created."
+        );
+    }
+
     private function handleOrderStatusCanceled(Order $order)
     {
         return $this->handleOrderStatusFailed($order);
@@ -251,6 +274,8 @@ final class OrderHandler extends AbstractResponseHandler
 
     private function handleOrderStatusFailed(Order $order)
     {
+        $this->createVoidTransaction($order);
+
         $charges = $order->getCharges();
 
         $acquirerMessages = '';
