@@ -45,6 +45,16 @@ class TransactionHandlerService extends AbstractHandlerService
         $orderHandler->handle($this->order);
     }
 
+    protected function handleVoided($webhook) {
+        $orderHandler = $this->getOrderHandler();
+
+        $status = $webhook->getEntity()->getStatus()->getStatus();
+
+        $this->order->setStatus(OrderStatus::$status());
+
+        $orderHandler->handle($this->order);
+    }
+
     protected function getOrderHandler(): OrderHandler
     {
         return new OrderHandler();

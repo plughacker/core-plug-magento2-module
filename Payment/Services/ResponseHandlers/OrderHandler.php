@@ -272,6 +272,11 @@ final class OrderHandler extends AbstractResponseHandler
         return $this->handleOrderStatusFailed($order);
     }
 
+    private function handleOrderStatusVoided(Order $order)
+    {
+        return $this->handleOrderStatusFailed($order);
+    }
+
     private function handleOrderStatusFailed(Order $order)
     {
         $this->createVoidTransaction($order);

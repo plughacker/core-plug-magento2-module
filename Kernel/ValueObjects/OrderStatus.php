@@ -13,6 +13,7 @@ final class OrderStatus extends AbstractValueObject
     const PROCESSING = 'processing';
     const CANCELED = 'canceled';
     const FAILED = 'failed';
+    const VOIDED = 'voided';
 
     /**
      *
@@ -68,6 +69,11 @@ final class OrderStatus extends AbstractValueObject
     static public function failed()
     {
         return new self(self::FAILED);
+    }
+
+    static public function voided()
+    {
+        return new self(self::VOIDED);
     }
 
     /**
