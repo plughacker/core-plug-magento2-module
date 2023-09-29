@@ -17,6 +17,13 @@ class TransactionHandlerService extends AbstractHandlerService
         $this->order = $orderRepository->findByPlatformId($webhook->getEntity()->getId());
     }
 
+    protected function handlePending($webhook)
+    {
+        $orderHandler = $this->getOrderHandler();
+
+        $orderHandler->handle($this->order);
+    }
+
     protected function handlePreAuthorized($webhook)
     {
         $orderHandler = $this->getOrderHandler();

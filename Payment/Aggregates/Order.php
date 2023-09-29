@@ -339,6 +339,7 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
         $orderRequest->amount = $this->getAmount();
         $orderRequest->statementDescriptor = $this->getStatementDescriptor();
         $orderRequest->orderId = $this->getOrderId();
+        $orderRequest->appInfo = $this->getAppInfo();
         // $orderRequest->customer = $this->getCustomer()->convertToSDKRequest();
 
         $orderRequestPayments = [];
@@ -364,6 +365,25 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
         $orderRequest->statementDescriptor = $statementDescriptor;
 
         return $orderRequest;
+    }
+
+    private function getAppInfo(): array
+    {
+        return [
+            'platform' => [
+                'integrator' => 'malga',
+                'name' => 'pluging-magento-ppp',
+                'version' => '1.0'
+            ],
+            'device' => [
+                'name' => str_replace('"', '', $_SERVER['HTTP_SEC_CH_UA_PLATFORM'] ?? ''),
+                'version' => $_SERVER['HTTP_USER_AGENT'] ?? ''
+            ],
+            'system' => [
+                'name' => 'magento',
+                'version' => '1.0'
+            ]
+        ];
     }
 
     private function creditcardPaymentMethod()

@@ -6,6 +6,7 @@ use PlugHacker\PlugCore\Kernel\Abstractions\AbstractValueObject;
 
 final class TransactionStatus extends AbstractValueObject
 {
+    const PENDING = 'pending';
     const PRE_AUTHORIZED = 'pre_authorized';
     const AUTHORIZED = 'authorized';
     const CAPTURE = "capture";
@@ -56,6 +57,11 @@ final class TransactionStatus extends AbstractValueObject
     public static function partialCapture()
     {
         return new self(self::PARTIAL_CAPTURE);
+    }
+
+    public static function pending()
+    {
+        return new self(self::PENDING);
     }
 
     public static function preAuthorized()
