@@ -12,6 +12,7 @@ final class OrderStatus extends AbstractValueObject
     const AUTHORIZED = 'authorized';
     const PROCESSING = 'processing';
     const CANCELED = 'canceled';
+    const CLOSED = 'closed';
     const FAILED = 'failed';
     const VOIDED = 'voided';
 
@@ -64,6 +65,11 @@ final class OrderStatus extends AbstractValueObject
     static public function canceled()
     {
         return new self(self::CANCELED);
+    }
+
+    static public function closed()
+    {
+        return new self(self::CLOSED);
     }
 
     static public function failed()

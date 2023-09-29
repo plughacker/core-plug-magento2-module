@@ -83,9 +83,7 @@ final class OrderService
         }
 
         //@todo In the future create a core status machine with the platform
-        if (!$order->getPlatformOrder()->getState()->equals(OrderState::closed())) {
-            $platformOrder->setStatus($orderStatus);
-        }
+        $platformOrder->setStatus($orderStatus);
     }
     public function updateAcquirerData(Order $order)
     {

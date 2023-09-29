@@ -5,7 +5,6 @@ namespace PlugHacker\PlugCore\Payment\Services\ResponseHandlers;
 use PlugHacker\PlugCore\Kernel\Abstractions\AbstractDataService;
 use PlugHacker\PlugCore\Kernel\Abstractions\AbstractModuleCoreSetup as MPSetup;
 use PlugHacker\PlugCore\Kernel\Aggregates\Order;
-use PlugHacker\PlugCore\Kernel\Interfaces\PlatformOrderInterface;
 use PlugHacker\PlugCore\Kernel\Repositories\OrderRepository;
 use PlugHacker\PlugCore\Kernel\Services\InvoiceService;
 use PlugHacker\PlugCore\Kernel\Services\LocalizationService;
@@ -13,14 +12,11 @@ use PlugHacker\PlugCore\Kernel\Services\OrderService;
 use PlugHacker\PlugCore\Kernel\ValueObjects\InvoiceState;
 use PlugHacker\PlugCore\Kernel\ValueObjects\OrderState;
 use PlugHacker\PlugCore\Kernel\ValueObjects\OrderStatus;
-use PlugHacker\PlugCore\Kernel\ValueObjects\TransactionType;
 use PlugHacker\PlugCore\Payment\Aggregates\Order as PaymentOrder;
-use PlugHacker\PlugCore\Payment\Factories\SavedCardFactory;
-use PlugHacker\PlugCore\Payment\Repositories\CustomerRepository;
-use PlugHacker\PlugCore\Payment\Repositories\SavedCardRepository;
 use PlugHacker\PlugCore\Kernel\Aggregates\Charge;
 use PlugHacker\PlugCore\Payment\Services\CardService;
 use PlugHacker\PlugCore\Payment\Services\CustomerService;
+use PlugHacker\PlugPagamentos\Concrete\Magento2DataService;
 
 /** For possible order states, see https://docs.plug.com/v1/reference#pedidos */
 final class OrderHandler extends AbstractResponseHandler
@@ -246,18 +242,14 @@ final class OrderHandler extends AbstractResponseHandler
 
     private function createVoidTransaction(Order $order)
     {
-        $dataServiceClass =
-            MPSetup::get(MPSetup::CONCRETE_DATA_SERVICE);
+        $dataServiceClass = MPSetup::get(MPSetup::CONCRETE_DATA_SERVICE);
 
         $this->logService->orderInfo(
             $order->getCode(),
             "Creating Void Transaction..."
         );
 
-        /**
-         *
-         * @var AbstractDataService $dataService
-         */
+        /** @var Magento2DataService $dataService */
         $dataService = new $dataServiceClass();
         $dataService->createVoidTransaction($order);
 
@@ -338,6 +330,21 @@ final class OrderHandler extends AbstractResponseHandler
             $i18n->getDashboard('Order canceled.'),
             $sender
         );
+
+        if ($platformOrder->getStatus() === OrderStatus::CANCELED) {
+            $invoiceService = new InvoiceService();
+            $invoiceService->cancelInvoicesFor($order);
+
+            $order->setStatus(OrderStatus::closed());
+
+            $order->getPlatformOrder()->setStatus(OrderStatus::closed());
+            $order->getPlatformOrder()->setState(OrderState::closed());
+            $order->getPlatformOrder()->save();
+
+            $orderRepository->save($order);
+
+            $orderService->syncPlatformWith($order);
+        }
 
         return "One or more charges weren't authorized. Please try again.";
     }
