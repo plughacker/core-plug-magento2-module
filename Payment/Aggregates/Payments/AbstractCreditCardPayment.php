@@ -9,6 +9,10 @@ use PlugHacker\PlugCore\Kernel\Exceptions\InvalidParamException;
 use PlugHacker\PlugCore\Kernel\Services\InstallmentService;
 use PlugHacker\PlugCore\Kernel\Services\MoneyService;
 use PlugHacker\PlugCore\Kernel\ValueObjects\CardBrand;
+use PlugHacker\PlugCore\Payment\Aggregates\Browser;
+use PlugHacker\PlugCore\Payment\Aggregates\FraudAnalysis;
+use PlugHacker\PlugCore\Payment\Aggregates\FraudAnalysisCustomer;
+use PlugHacker\PlugCore\Payment\Aggregates\FraudAnalysisCustomerBrowser;
 use PlugHacker\PlugCore\Payment\ValueObjects\AbstractCardIdentifier;
 use PlugHacker\PlugCore\Payment\ValueObjects\PaymentMethod;
 
@@ -25,7 +29,7 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
     /** @var AbstractCardIdentifier */
     protected $identifier;
 
-
+    protected $fraudAnalysis;
     public function __construct()
     {
         $this->installments = 1;
@@ -134,6 +138,16 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
         $this->statementDescriptor = $statementDescriptor;
     }
 
+    public function getFraudAnalysis()
+    {
+        return $this->fraudAnalysis;
+    }
+
+    public function setFraudAnalysis(bool $fraudAnalysis)
+    {
+        $this->fraudAnalysis = $fraudAnalysis;
+    }
+
     /**
      * @return bool
      */
@@ -184,6 +198,7 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
         $obj->statementDescriptor = $this->statementDescriptor;
         $obj->capture = $this->capture;
         $obj->identifier = $this->identifier;
+        $obj->fraudAnalysis = $this->fraudAnalysis;
 
         return $obj;
     }
@@ -212,6 +227,32 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
         $cardRequest->capture = $this->isCapture();
         $cardRequest->installments = $this->getInstallments();
         $cardRequest->statementDescriptor = $this->getStatementDescriptor();
+
+        if ($this->getFraudAnalysis()) {
+            $fraudAnalysisCustomerBrowser = new FraudAnalysisCustomerBrowser();
+
+            $fraudAnalysisCustomerBrowser->setEmail((string)$this->getCustomer()?->getEmail());
+            $fraudAnalysisCustomerBrowser->setHostName($_SERVER['HTTP_HOST'] ??
+                $_SERVER['HTTP_X_FORWARDED_HOST'] ?? $_SERVER['HOSTNAME'] ?? 'malga.io');
+
+            $fraudAnalysisCustomerBrowser->setIpAddress($_SERVER['HTTP_CLIENT_IP'] ??
+                $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1');
+
+            $fraudAnalysisCustomerBrowser->setType((string)$_SERVER['HTTP_USER_AGENT']);
+
+            $browserFingerprint = md5((string)$_SERVER['HTTP_SEC_CH_UA_PLATFORM'] .
+                $fraudAnalysisCustomerBrowser->getType());
+
+            $fraudAnalysisCustomerBrowser->setBrowserFingerprint($browserFingerprint);
+
+            $fraudAnalysisCustomer = new FraudAnalysisCustomer();
+            $fraudAnalysisCustomer->setBrowser($fraudAnalysisCustomerBrowser->convertToSDKRequest());
+
+            $fraudAnalysis = new FraudAnalysis();
+            $fraudAnalysis->setCustomer($fraudAnalysisCustomer->convertToSDKRequest());
+
+            $cardRequest->fraudAnalysis = $fraudAnalysis->convertToSDKRequest();
+        }
 
         $paymentMethod = new \PlugHacker\PlugCore\Payment\Aggregates\PaymentMethod();
         $paymentMethod->setPaymentType('credit');

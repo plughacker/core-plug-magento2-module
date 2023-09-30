@@ -446,6 +446,11 @@ final class Configuration extends AbstractEntity
         return $this->antifraudEnabled;
     }
 
+    public function getAntifraudEnabled(): bool
+    {
+        return $this->antifraudEnabled;
+    }
+
     /**
      * @param bool $antifraudEnabled
      */
@@ -457,7 +462,7 @@ final class Configuration extends AbstractEntity
     /**
      * @return int
      */
-    protected function getAntifraudMinAmount()
+    public function getAntifraudMinAmount(): int
     {
         return $this->antifraudMinAmount;
     }
