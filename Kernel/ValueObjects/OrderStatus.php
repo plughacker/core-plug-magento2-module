@@ -16,6 +16,8 @@ final class OrderStatus extends AbstractValueObject
     const FAILED = 'failed';
     const VOIDED = 'voided';
 
+    const CHARGED_BACK = 'charged_back';
+
     /**
      *
      * @var string
@@ -80,6 +82,11 @@ final class OrderStatus extends AbstractValueObject
     static public function voided()
     {
         return new self(self::VOIDED);
+    }
+
+    static public function chargedBack()
+    {
+        return new self(self::CHARGED_BACK);
     }
 
     /**

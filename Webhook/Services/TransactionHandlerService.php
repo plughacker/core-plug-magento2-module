@@ -28,6 +28,10 @@ class TransactionHandlerService extends AbstractHandlerService
     {
         $orderHandler = $this->getOrderHandler();
 
+        $status = $webhook->getEntity()->getStatus()->getStatus();
+
+        $this->order->setStatus(OrderStatus::$status());
+
         $orderHandler->handle($this->order);
     }
 
@@ -56,6 +60,24 @@ class TransactionHandlerService extends AbstractHandlerService
         $orderHandler = $this->getOrderHandler();
 
         $status = $webhook->getEntity()->getStatus()->getStatus();
+
+        $this->order->setStatus(OrderStatus::$status());
+
+        $orderHandler->handle($this->order);
+    }
+
+    protected function handleChargedBack($webhook) {
+        $orderHandler = $this->getOrderHandler();
+
+        $status = $webhook->getEntity()->getStatus()->getStatus();
+
+        $baseStatus = explode('_', $status);
+
+        $status = $baseStatus[0];
+
+        for ($i = 1, $iMax = count($baseStatus); $i < $iMax; $i++) {
+            $status .= ucfirst(($baseStatus[$i]));
+        }
 
         $this->order->setStatus(OrderStatus::$status());
 

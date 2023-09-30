@@ -259,12 +259,36 @@ final class OrderHandler extends AbstractResponseHandler
         );
     }
 
+    private function createRefundTransaction(Order $order)
+    {
+        $dataServiceClass = MPSetup::get(MPSetup::CONCRETE_DATA_SERVICE);
+
+        $this->logService->orderInfo(
+            $order->getCode(),
+            "Creating Refund Transaction..."
+        );
+
+        /** @var Magento2DataService $dataService */
+        $dataService = new $dataServiceClass();
+        $dataService->createRefundTransaction($order);
+
+        $this->logService->orderInfo(
+            $order->getCode(),
+            "Refund Transaction created."
+        );
+    }
+
     private function handleOrderStatusCanceled(Order $order)
     {
         return $this->handleOrderStatusFailed($order);
     }
 
     private function handleOrderStatusVoided(Order $order)
+    {
+        return $this->handleOrderStatusFailed($order);
+    }
+
+    private function handleOrderStatusChargedBack(Order $order)
     {
         return $this->handleOrderStatusFailed($order);
     }
@@ -344,6 +368,8 @@ final class OrderHandler extends AbstractResponseHandler
             $orderRepository->save($order);
 
             $orderService->syncPlatformWith($order);
+
+            $this->createRefundTransaction($order);
         }
 
         return "One or more charges weren't authorized. Please try again.";
