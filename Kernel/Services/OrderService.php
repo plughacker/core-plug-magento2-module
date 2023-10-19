@@ -278,7 +278,14 @@ final class OrderService
 
                 $this->persistListChargeFailed($response);
 
-                $message = $i18n->getDashboard("Can't create order.");
+                $declinedCode = $response['transactionRequests'][0]['providerError']['declinedCode'] ?? '';
+
+                if ($declinedCode) {
+                    $message = $i18n->getDashboard($declinedCode);
+                } else {
+                    $message = $i18n->getDashboard("Can't create order.");
+                }
+
                 throw new \Exception($message, 400);
             }
 
