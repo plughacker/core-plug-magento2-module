@@ -377,7 +377,7 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
         return [
             'platform' => [
                 'integrator' => 'malga',
-                'name' => 'pluging-magento-ppp',
+                'name' => 'magento',
                 'version' => '1.0'
             ],
             'device' => [
