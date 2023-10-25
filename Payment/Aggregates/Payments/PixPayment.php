@@ -156,6 +156,7 @@ final class PixPayment extends AbstractPayment
         $customerBoleto->setName($customer->getName());
         $customerBoleto->setEmail($customer->getEmail());
         $customerBoleto->setPhoneNumber($customer->getPhoneNumber());
+        $customerBoleto->setRegistrationDate($customer->getRegistrationDate());
         $customerBoleto->setDocument($customer->getDocument());
 
         $paymentSource = new CustomerPaymentSource();

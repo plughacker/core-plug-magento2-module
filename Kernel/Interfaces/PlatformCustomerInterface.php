@@ -8,6 +8,7 @@ interface PlatformCustomerInterface
     public function getPlugId();
     public function getName();
     public function getEmail();
+    public function getRegistrationDate();
     public function getDocument();
     public function getType();
     public function getAddress();

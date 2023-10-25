@@ -30,6 +30,7 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
 
     /** @var LocalizationService */
     protected $i18n;
+    private string $registrationDate;
 
     public function __construct()
     {
@@ -146,6 +147,16 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
         $this->address = $address;
     }
 
+    public function getRegistrationDate(): string
+    {
+        return $this->registrationDate;
+    }
+
+    public function setRegistrationDate(string $registrationDate): void
+    {
+        $this->registrationDate = $registrationDate;
+    }
+
     /**
      * Specify data which should be serialized to JSON
      * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
@@ -160,6 +171,7 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
         $obj->name = $this->name;
         $obj->email = $this->email;
         $obj->phoneNumber = $this->phoneNumber;
+        $obj->registrationDate = $this->registrationDate;
         $obj->document = $this->document;
         $obj->address = $this->address;
         $obj->plugId = $this->getPlugId();
@@ -174,7 +186,6 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
         }
         return null;
     }
-
 
     public function convertToSDKRequest()
     {

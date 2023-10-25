@@ -24,6 +24,7 @@ final class CustomerBoleto extends AbstractEntity implements ConvertibleToSDKReq
 
     /** @var CustomerDocument */
     private $document;
+    private string $registrationDate;
 
     public function __construct()
     {
@@ -124,6 +125,16 @@ final class CustomerBoleto extends AbstractEntity implements ConvertibleToSDKReq
         return $this;
     }
 
+    public function getRegistrationDate(): string
+    {
+        return $this->registrationDate;
+    }
+
+    public function setRegistrationDate(string $registrationDate): void
+    {
+        $this->registrationDate = $registrationDate;
+    }
+
     /**
      * Specify data which should be serialized to JSON
      * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
@@ -138,6 +149,7 @@ final class CustomerBoleto extends AbstractEntity implements ConvertibleToSDKReq
         $obj->name = $this->name;
         $obj->email = $this->email;
         $obj->phoneNumber = $this->phoneNumber;
+        $obj->registrationDate = $this->registrationDate;
         $obj->document = $this->document;
 
         return $obj;

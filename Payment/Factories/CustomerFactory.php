@@ -44,6 +44,7 @@ class CustomerFactory implements FactoryInterface
 
         $customer->setName($data->name);
         $customer->setEmail($data->email);
+        $customer->setRegistrationDate($data->registrationDate);
 
         $homePhone = new Phone($data->homePhone);
         $customer->setPhoneNumber($homePhone->getFullNumber());
@@ -67,6 +68,7 @@ class CustomerFactory implements FactoryInterface
 
         $customer->setName($data->name);
         $customer->setEmail($data->email);
+        $customer->setRegistrationDate($data->registrationDate);
 
         $homePhone = new Phone($data->homePhone);
         $customer->setPhoneNumber($homePhone->getFullNumber());
@@ -105,6 +107,7 @@ class CustomerFactory implements FactoryInterface
 
         $customer->setName($platformData->getName());
         $customer->setEmail($platformData->getEmail());
+        $customer->setRegistrationDate($platformData->getEmail());
         $customer->setDocument($platformData->getDocument());
         /** @todo set address and phones */
 

@@ -246,6 +246,12 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
             $fraudAnalysisCustomerBrowser->setBrowserFingerprint($browserFingerprint);
 
             $fraudAnalysisCustomer = new FraudAnalysisCustomer();
+            $fraudAnalysisCustomer->setName((string)$this->getCustomer()?->getName());
+            $fraudAnalysisCustomer->setEmail((string)$this->getCustomer()?->getEmail());
+            $fraudAnalysisCustomer->setPhone((string)$this->getCustomer()?->getPhoneNumber());
+            $fraudAnalysisCustomer->setIdentityType((string)$this->getCustomer()?->getDocument()?->getType());
+            $fraudAnalysisCustomer->setIdentity((string)$this->getCustomer()?->getDocument()?->getNumber());
+            $fraudAnalysisCustomer->setRegistrationDate((string)$this->getCustomer()?->getRegistrationDate());
             $fraudAnalysisCustomer->setBrowser($fraudAnalysisCustomerBrowser->convertToSDKRequest());
 
             $fraudAnalysis = new FraudAnalysis();
