@@ -64,7 +64,7 @@ final class FraudAnalysisCustomerBrowser implements ConvertibleToSDKRequestsInte
         $this->type = $type;
     }
 
-    public function convertToSDKRequest(): CreateFraudAnalysisCustomerBrowserRequest
+    public function convertToSDKRequest()
     {
         $fraudAnalysisCustomerBrowserRequest = new CreateFraudAnalysisCustomerBrowserRequest();
         $fraudAnalysisCustomerBrowserRequest->browserFingerprint = $this->getBrowserFingerprint();

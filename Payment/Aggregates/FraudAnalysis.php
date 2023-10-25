@@ -24,7 +24,7 @@ final class FraudAnalysis implements ConvertibleToSDKRequestsInterface
         $this->customer = $customer;
     }
 
-    public function convertToSDKRequest(): CreateFraudAnalysisRequest
+    public function convertToSDKRequest()
     {
         $fraudAnalysisRequest = new CreateFraudAnalysisRequest();
         $fraudAnalysisRequest->customer = $this->getCustomer();
