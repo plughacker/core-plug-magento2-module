@@ -9,7 +9,6 @@ use PlugHacker\PlugCore\Kernel\Exceptions\InvalidParamException;
 use PlugHacker\PlugCore\Kernel\Services\InstallmentService;
 use PlugHacker\PlugCore\Kernel\Services\MoneyService;
 use PlugHacker\PlugCore\Kernel\ValueObjects\CardBrand;
-use PlugHacker\PlugCore\Payment\Aggregates\Browser;
 use PlugHacker\PlugCore\Payment\Aggregates\FraudAnalysis;
 use PlugHacker\PlugCore\Payment\Aggregates\FraudAnalysisCustomer;
 use PlugHacker\PlugCore\Payment\Aggregates\FraudAnalysisCustomerBillingAddress;
@@ -222,7 +221,8 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
     protected function convertToPrimitivePaymentRequest()
     {
         $createCardRequest = new CreateCardRequest();
-        $createCardRequest->billingAddress = $this->getCustomer()->getAddressToSDK();
+        $customer = $this->getCustomer();
+        $createCardRequest->billingAddress = $customer->getAddressToSDK();
 
         $cardRequest = new CreateCreditCardPaymentRequest();
         $cardRequest->card = $createCardRequest;
@@ -231,7 +231,7 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
         $cardRequest->statementDescriptor = $this->getStatementDescriptor();
 
         if ($this->getFraudAnalysis()) {
-            $billingAddress = $this->getCustomer()->getBillingAddress();
+            $billingAddress = $customer->getBillingAddress();
 
             $fraudAnalysisCustomerBillingAddress = new FraudAnalysisCustomerBillingAddress();
             $fraudAnalysisCustomerBillingAddress->setStreet((string)$billingAddress->getStreet());
@@ -243,7 +243,7 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
             $fraudAnalysisCustomerBillingAddress->setState((string)$billingAddress->getState());
             $fraudAnalysisCustomerBillingAddress->setCountry((string)$billingAddress->getCountry());
 
-            $deliveryAddress = $this->getCustomer()->getDeliveryAddress();
+            $deliveryAddress = $customer->getDeliveryAddress();
 
             $fraudAnalysisCustomerDeliveryAddress = new FraudAnalysisCustomerDeliveryAddress();
             $fraudAnalysisCustomerDeliveryAddress->setStreet((string)$deliveryAddress->getStreet());
@@ -257,7 +257,7 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
 
             $fraudAnalysisCustomerBrowser = new FraudAnalysisCustomerBrowser();
 
-            $fraudAnalysisCustomerBrowser->setEmail((string)$this->getCustomer()?->getEmail());
+            $fraudAnalysisCustomerBrowser->setEmail((string)$customer->getEmail());
             $fraudAnalysisCustomerBrowser->setHostName($_SERVER['HTTP_HOST'] ??
                 $_SERVER['HTTP_X_FORWARDED_HOST'] ?? $_SERVER['HOSTNAME'] ?? 'malga.io');
 
@@ -272,12 +272,12 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
             $fraudAnalysisCustomerBrowser->setBrowserFingerprint($browserFingerprint);
 
             $fraudAnalysisCustomer = new FraudAnalysisCustomer();
-            $fraudAnalysisCustomer->setName((string)$this->getCustomer()?->getName());
-            $fraudAnalysisCustomer->setEmail((string)$this->getCustomer()?->getEmail());
-            $fraudAnalysisCustomer->setPhone((string)$this->getCustomer()?->getPhoneNumber());
-            $fraudAnalysisCustomer->setIdentityType((string)$this->getCustomer()?->getDocument()?->getType());
-            $fraudAnalysisCustomer->setIdentity((string)$this->getCustomer()?->getDocument()?->getNumber());
-            $fraudAnalysisCustomer->setRegistrationDate((string)$this->getCustomer()?->getRegistrationDate());
+            $fraudAnalysisCustomer->setName((string)$customer->getName());
+            $fraudAnalysisCustomer->setEmail((string)$customer->getEmail());
+            $fraudAnalysisCustomer->setPhone((string)$customer->getPhoneNumber());
+            $fraudAnalysisCustomer->setIdentityType(mb_strtoupper((string)$customer->getDocument()?->getType()));
+            $fraudAnalysisCustomer->setIdentity((string)$customer->getDocument()?->getNumber());
+            $fraudAnalysisCustomer->setRegistrationDate((string)$customer->getRegistrationDate());
             $fraudAnalysisCustomer->setBillingAddress($fraudAnalysisCustomerBillingAddress->convertToSDKRequest());
             $fraudAnalysisCustomer->setDeliveryAddress($fraudAnalysisCustomerDeliveryAddress->convertToSDKRequest());
             $fraudAnalysisCustomer->setBrowser($fraudAnalysisCustomerBrowser->convertToSDKRequest());

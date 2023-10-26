@@ -93,22 +93,22 @@ final class FraudAnalysisCustomer implements ConvertibleToSDKRequestsInterface
         $this->registrationDate = $registrationDate;
     }
 
-    public function getBillingAddress(): array
+    public function getBillingAddress()
     {
         return $this->billingAddress;
     }
 
-    public function setBillingAddress(array $billingAddress): void
+    public function setBillingAddress(CreateFraudAnalysisCustomerBillingAddressRequest $billingAddress): void
     {
         $this->billingAddress = $billingAddress;
     }
 
-    public function getDeliveryAddress(): array
+    public function getDeliveryAddress()
     {
         return $this->deliveryAddress;
     }
 
-    public function setDeliveryAddress(array $deliveryAddress): void
+    public function setDeliveryAddress(CreateFraudAnalysisCustomerDeliveryAddressRequest $deliveryAddress): void
     {
         $this->deliveryAddress = $deliveryAddress;
     }
