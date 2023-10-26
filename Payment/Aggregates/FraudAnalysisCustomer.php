@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace PlugHacker\PlugCore\Payment\Aggregates;
 
+use PlugHacker\PlugAPILib\Models\CreateFraudAnalysisCustomerBillingAddressRequest;
 use PlugHacker\PlugAPILib\Models\CreateFraudAnalysisCustomerBrowserRequest;
+use PlugHacker\PlugAPILib\Models\CreateFraudAnalysisCustomerDeliveryAddressRequest;
 use PlugHacker\PlugAPILib\Models\CreateFraudAnalysisCustomerRequest;
 use PlugHacker\PlugCore\Payment\Interfaces\ConvertibleToSDKRequestsInterface;
 
@@ -15,6 +17,17 @@ final class FraudAnalysisCustomer implements ConvertibleToSDKRequestsInterface
     private string $identityType;
     private string $identity;
     private string $registrationDate;
+
+    /**
+     * @var CreateFraudAnalysisCustomerBillingAddressRequest[]
+     */
+    private $billingAddress;
+
+    /**
+     * @var CreateFraudAnalysisCustomerDeliveryAddressRequest[]
+     */
+    private $deliveryAddress;
+
     /**
      * @var CreateFraudAnalysisCustomerBrowserRequest[]
      */
@@ -80,6 +93,26 @@ final class FraudAnalysisCustomer implements ConvertibleToSDKRequestsInterface
         $this->registrationDate = $registrationDate;
     }
 
+    public function getBillingAddress(): array
+    {
+        return $this->billingAddress;
+    }
+
+    public function setBillingAddress(array $billingAddress): void
+    {
+        $this->billingAddress = $billingAddress;
+    }
+
+    public function getDeliveryAddress(): array
+    {
+        return $this->deliveryAddress;
+    }
+
+    public function setDeliveryAddress(array $deliveryAddress): void
+    {
+        $this->deliveryAddress = $deliveryAddress;
+    }
+
     public function getBrowser()
     {
         return $this->browser;
@@ -99,6 +132,8 @@ final class FraudAnalysisCustomer implements ConvertibleToSDKRequestsInterface
         $fraudAnalysisCustomerBrowserRequest->identityType = $this->getIdentityType();
         $fraudAnalysisCustomerBrowserRequest->identity = $this->getIdentity();
         $fraudAnalysisCustomerBrowserRequest->registrationDate = $this->getRegistrationDate();
+        $fraudAnalysisCustomerBrowserRequest->billingAddress = $this->getBillingAddress();
+        $fraudAnalysisCustomerBrowserRequest->deliveryAddress = $this->getDeliveryAddress();
         $fraudAnalysisCustomerBrowserRequest->browser = $this->getBrowser();
 
         return $fraudAnalysisCustomerBrowserRequest;

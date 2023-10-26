@@ -55,7 +55,7 @@ class CustomerFactory implements FactoryInterface
         $customer->setDocument($documentRequest->convertToSDKRequest());
 
         $addressFactory = new AddressFactory();
-        $customer->setAddress($addressFactory->createFromJson($json));
+        $customer->setBillingAddress($addressFactory->createFromJson($json));
 
         return $customer;
     }

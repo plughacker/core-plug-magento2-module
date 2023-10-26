@@ -12,7 +12,9 @@ use PlugHacker\PlugCore\Kernel\ValueObjects\CardBrand;
 use PlugHacker\PlugCore\Payment\Aggregates\Browser;
 use PlugHacker\PlugCore\Payment\Aggregates\FraudAnalysis;
 use PlugHacker\PlugCore\Payment\Aggregates\FraudAnalysisCustomer;
+use PlugHacker\PlugCore\Payment\Aggregates\FraudAnalysisCustomerBillingAddress;
 use PlugHacker\PlugCore\Payment\Aggregates\FraudAnalysisCustomerBrowser;
+use PlugHacker\PlugCore\Payment\Aggregates\FraudAnalysisCustomerDeliveryAddress;
 use PlugHacker\PlugCore\Payment\ValueObjects\AbstractCardIdentifier;
 use PlugHacker\PlugCore\Payment\ValueObjects\PaymentMethod;
 
@@ -229,6 +231,30 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
         $cardRequest->statementDescriptor = $this->getStatementDescriptor();
 
         if ($this->getFraudAnalysis()) {
+            $billingAddress = $this->getCustomer()->getBillingAddress();
+
+            $fraudAnalysisCustomerBillingAddress = new FraudAnalysisCustomerBillingAddress();
+            $fraudAnalysisCustomerBillingAddress->setStreet((string)$billingAddress->getStreet());
+            $fraudAnalysisCustomerBillingAddress->setNumber((string)$billingAddress->getNumber());
+            $fraudAnalysisCustomerBillingAddress->setComplement((string)$billingAddress->getComplement());
+            $fraudAnalysisCustomerBillingAddress->setDistrict((string)$billingAddress->getNeighborhood());
+            $fraudAnalysisCustomerBillingAddress->setZipCode((string)$billingAddress->getZipCode());
+            $fraudAnalysisCustomerBillingAddress->setCity((string)$billingAddress->getCity());
+            $fraudAnalysisCustomerBillingAddress->setState((string)$billingAddress->getState());
+            $fraudAnalysisCustomerBillingAddress->setCountry((string)$billingAddress->getCountry());
+
+            $deliveryAddress = $this->getCustomer()->getDeliveryAddress();
+
+            $fraudAnalysisCustomerDeliveryAddress = new FraudAnalysisCustomerDeliveryAddress();
+            $fraudAnalysisCustomerDeliveryAddress->setStreet((string)$deliveryAddress->getStreet());
+            $fraudAnalysisCustomerDeliveryAddress->setNumber((string)$deliveryAddress->getNumber());
+            $fraudAnalysisCustomerDeliveryAddress->setComplement((string)$deliveryAddress->getComplement());
+            $fraudAnalysisCustomerDeliveryAddress->setDistrict((string)$deliveryAddress->getNeighborhood());
+            $fraudAnalysisCustomerDeliveryAddress->setZipCode((string)$deliveryAddress->getZipCode());
+            $fraudAnalysisCustomerDeliveryAddress->setCity((string)$deliveryAddress->getCity());
+            $fraudAnalysisCustomerDeliveryAddress->setState((string)$deliveryAddress->getState());
+            $fraudAnalysisCustomerDeliveryAddress->setCountry((string)$deliveryAddress->getCountry());
+
             $fraudAnalysisCustomerBrowser = new FraudAnalysisCustomerBrowser();
 
             $fraudAnalysisCustomerBrowser->setEmail((string)$this->getCustomer()?->getEmail());
@@ -252,6 +278,8 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
             $fraudAnalysisCustomer->setIdentityType((string)$this->getCustomer()?->getDocument()?->getType());
             $fraudAnalysisCustomer->setIdentity((string)$this->getCustomer()?->getDocument()?->getNumber());
             $fraudAnalysisCustomer->setRegistrationDate((string)$this->getCustomer()?->getRegistrationDate());
+            $fraudAnalysisCustomer->setBillingAddress($fraudAnalysisCustomerBillingAddress->convertToSDKRequest());
+            $fraudAnalysisCustomer->setDeliveryAddress($fraudAnalysisCustomerDeliveryAddress->convertToSDKRequest());
             $fraudAnalysisCustomer->setBrowser($fraudAnalysisCustomerBrowser->convertToSDKRequest());
 
             $fraudAnalysis = new FraudAnalysis();
