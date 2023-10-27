@@ -105,10 +105,9 @@ final class BoletoPayment extends AbstractPayment
 
         $customer = $this->getCustomer();
         $customerBoleto = new \PlugHacker\PlugCore\Payment\Aggregates\CustomerBoleto();
-        $customerBoleto->setName($customer->getName());
-        $customerBoleto->setEmail($customer->getEmail());
-        $customerBoleto->setPhoneNumber($customer->getPhoneNumber());
-        $customerBoleto->setRegistrationDate($customer->getRegistrationDate());
+        $customerBoleto->setName((string)$customer->getName());
+        $customerBoleto->setEmail((string)$customer->getEmail());
+        $customerBoleto->setPhoneNumber((string)$customer->getPhoneNumber());
         $customerBoleto->setDocument($customer->getDocument());
 
         $paymentSource = new CustomerPaymentSource();

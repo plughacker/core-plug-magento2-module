@@ -42,16 +42,16 @@ class CustomerFactory implements FactoryInterface
 
         $customer = new Customer;
 
-        $customer->setName($data->name);
-        $customer->setEmail($data->email);
-        $customer->setRegistrationDate($data->registrationDate);
+        $customer->setName((string)$data->name);
+        $customer->setEmail((string)$data->email);
+        $customer->setRegistrationDate((string)$data->registrationDate);
 
         $homePhone = new Phone($data->homePhone);
-        $customer->setPhoneNumber($homePhone->getFullNumber());
+        $customer->setPhoneNumber((string)$homePhone->getFullNumber());
 
         $documentRequest = new CustomerDocument();
         $documentRequest->setDocument($data->document);
-        $documentRequest->setType(CustomerType::individual()->getType());
+        $documentRequest->setType((string)CustomerType::individual()->getType());
         $customer->setDocument($documentRequest->convertToSDKRequest());
 
         $addressFactory = new AddressFactory();
@@ -66,16 +66,16 @@ class CustomerFactory implements FactoryInterface
 
         $customer = new CustomerBoleto;
 
-        $customer->setName($data->name);
-        $customer->setEmail($data->email);
-        $customer->setRegistrationDate($data->registrationDate);
+        $customer->setName((string)$data->name);
+        $customer->setEmail((string)$data->email);
+        $customer->setRegistrationDate((string)$data->registrationDate);
 
         $homePhone = new Phone($data->homePhone);
-        $customer->setPhoneNumber($homePhone->getFullNumber());
+        $customer->setPhoneNumber((string)$homePhone->getFullNumber());
 
         $documentRequest = new CustomerDocument();
         $documentRequest->setDocument($data->document);
-        $documentRequest->setType(CustomerType::individual()->getType());
+        $documentRequest->setType((string)CustomerType::individual()->getType());
         $customer->setDocument($documentRequest->convertToSDKRequest());
 
         return $customer;
@@ -105,9 +105,9 @@ class CustomerFactory implements FactoryInterface
             );
         }
 
-        $customer->setName($platformData->getName());
-        $customer->setEmail($platformData->getEmail());
-        $customer->setRegistrationDate($platformData->getEmail());
+        $customer->setName((string)$platformData->getName());
+        $customer->setEmail((string)$platformData->getEmail());
+        $customer->setRegistrationDate((string)$platformData->getRegistrationDate());
         $customer->setDocument($platformData->getDocument());
         /** @todo set address and phones */
 
