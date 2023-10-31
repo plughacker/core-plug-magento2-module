@@ -4,12 +4,17 @@ namespace PlugHacker\PlugCore\Payment\Aggregates\Payments;
 
 use PlugHacker\PlugAPILib\Models\CreateCardRequest;
 use PlugHacker\PlugAPILib\Models\CreateCreditCardPaymentRequest;
+use PlugHacker\PlugAPILib\Models\CreateFraudAnalysisCartItemsRequest;
+use PlugHacker\PlugAPILib\Models\CreateFraudAnalysisCartRequest;
 use PlugHacker\PlugCore\Kernel\Abstractions\AbstractModuleCoreSetup as MPSetup;
 use PlugHacker\PlugCore\Kernel\Exceptions\InvalidParamException;
 use PlugHacker\PlugCore\Kernel\Services\InstallmentService;
 use PlugHacker\PlugCore\Kernel\Services\MoneyService;
 use PlugHacker\PlugCore\Kernel\ValueObjects\CardBrand;
+use PlugHacker\PlugCore\Payment\Aggregates\CartItems;
 use PlugHacker\PlugCore\Payment\Aggregates\FraudAnalysis;
+use PlugHacker\PlugCore\Payment\Aggregates\FraudAnalysisCart;
+use PlugHacker\PlugCore\Payment\Aggregates\FraudAnalysisCartItems;
 use PlugHacker\PlugCore\Payment\Aggregates\FraudAnalysisCustomer;
 use PlugHacker\PlugCore\Payment\Aggregates\FraudAnalysisCustomerBillingAddress;
 use PlugHacker\PlugCore\Payment\Aggregates\FraudAnalysisCustomerBrowser;
@@ -282,8 +287,28 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
             $fraudAnalysisCustomer->setDeliveryAddress($fraudAnalysisCustomerDeliveryAddress->convertToSDKRequest());
             $fraudAnalysisCustomer->setBrowser($fraudAnalysisCustomerBrowser->convertToSDKRequest());
 
+            $fraudAnalysisCartItems = [];
+
+            /** @var CartItems $cartItem */
+            foreach ($this->getOrder()->getCart() as $cartItem) {
+                $fraudAnalysisCartItem = new FraudAnalysisCartItems();
+                $fraudAnalysisCartItem->setName($cartItem->getName());
+                $fraudAnalysisCartItem->setQuantity($cartItem->getQuantity());
+                $fraudAnalysisCartItem->setSku($cartItem->getSku());
+                $fraudAnalysisCartItem->setUnitPrice($cartItem->getUnitPrice());
+                $fraudAnalysisCartItem->setRisk($cartItem->getRisk());
+                $fraudAnalysisCartItem->setDescription($cartItem->getDescription());
+                $fraudAnalysisCartItem->setCategoryId($cartItem->getCategoryId());
+
+                $fraudAnalysisCartItems[] = $fraudAnalysisCartItem->convertToSDKRequest();
+            }
+
+            $fraudAnalysisCart = new FraudAnalysisCart();
+            $fraudAnalysisCart->setItems($fraudAnalysisCartItems);
+
             $fraudAnalysis = new FraudAnalysis();
             $fraudAnalysis->setCustomer($fraudAnalysisCustomer->convertToSDKRequest());
+            $fraudAnalysis->setCart($fraudAnalysisCart->convertToSDKRequest());
 
             $cardRequest->fraudAnalysis = $fraudAnalysis->convertToSDKRequest();
         }

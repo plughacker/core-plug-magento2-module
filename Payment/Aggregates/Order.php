@@ -42,6 +42,8 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
     /** @var boolean */
     private $antifraudEnabled;
 
+    private $cart;
+
     public function __construct()
     {
         $this->payments = [];
@@ -406,4 +408,17 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
         return PaymentMethod::pix();
     }
 
+    public function getCart()
+    {
+        return $this->cart;
+    }
+
+    /**
+     * @param CartItems[] $cart
+     * @return void
+     */
+    public function setCart($cart): void
+    {
+        $this->cart = $cart;
+    }
 }

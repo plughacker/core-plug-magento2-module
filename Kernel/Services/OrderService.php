@@ -373,6 +373,8 @@ final class OrderService
 
         $order->setOrderId($platformOrder->getCode());
 
+        $order->setCart($platformOrder->getCartItems());
+
         return $order;
     }
 

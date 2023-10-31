@@ -7,7 +7,7 @@ use PlugHacker\PlugAPILib\Models\CreateFraudAnalysisCartItemsRequest;
 use PlugHacker\PlugAPILib\Models\CreateFraudAnalysisCustomerBillingAddressRequest;
 use PlugHacker\PlugCore\Payment\Interfaces\ConvertibleToSDKRequestsInterface;
 
-class FraudAnalysisCustomerItems implements ConvertibleToSDKRequestsInterface
+class FraudAnalysisCartItems implements ConvertibleToSDKRequestsInterface
 {
     public string $name;
     public int $quantity;

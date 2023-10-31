@@ -18,7 +18,7 @@ final class FraudAnalysisCart implements ConvertibleToSDKRequestsInterface
         return $this->items;
     }
 
-    public function setItems(CreateFraudAnalysisCartRequest $items): void
+    public function setItems($items): void
     {
         $this->items = $items;
     }
