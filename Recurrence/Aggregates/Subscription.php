@@ -573,8 +573,9 @@ class Subscription extends AbstractEntity
         }
 
         $card = new CreateCardRequest();
-        if ($this->getCustomer()->getAddress() != null) {
-            $card->billingAddress = $this->getCustomer()->getAddress()->convertToSDKRequest();
+        if ($this->getCustomer()->getBillingAddress() != null) {
+        if ($this->getCustomer()->getBillingAddress() != null) {
+            $card->billingAddress = $this->getCustomer()->getBillingAddress()->convertToSDKRequest();
         }
 
         $subscriptionRequest->card = $card;
@@ -597,7 +598,7 @@ class Subscription extends AbstractEntity
         return null;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return [
             "id" => $this->getId(),

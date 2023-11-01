@@ -83,9 +83,7 @@ final class OrderService
         }
 
         //@todo In the future create a core status machine with the platform
-        if (!$order->getPlatformOrder()->getState()->equals(OrderState::closed())) {
-            $platformOrder->setStatus($orderStatus);
-        }
+        $platformOrder->setStatus($orderStatus);
     }
     public function updateAcquirerData(Order $order)
     {
@@ -280,7 +278,14 @@ final class OrderService
 
                 $this->persistListChargeFailed($response);
 
-                $message = $i18n->getDashboard("Can't create order.");
+                $declinedCode = $response['transactionRequests'][0]['providerError']['declinedCode'] ?? '';
+
+                if ($declinedCode) {
+                    $message = $i18n->getDashboard($declinedCode);
+                } else {
+                    $message = $i18n->getDashboard("Can't create order.");
+                }
+
                 throw new \Exception($message, 400);
             }
 
@@ -367,6 +372,8 @@ final class OrderService
         }
 
         $order->setOrderId($platformOrder->getCode());
+
+        $order->setCart($platformOrder->getCartItems());
 
         return $order;
     }

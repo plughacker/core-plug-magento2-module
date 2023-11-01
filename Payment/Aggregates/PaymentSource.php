@@ -49,7 +49,7 @@ final class PaymentSource extends AbstractEntity implements ConvertibleToSDKRequ
         $this->tokenId = $tokenId;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $obj = new \stdClass();
         $obj->sourceType = $this->sourceType;

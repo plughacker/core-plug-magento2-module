@@ -7,6 +7,7 @@ use PlugHacker\PlugCore\Kernel\Exceptions\InvalidParamException;
 use PlugHacker\PlugCore\Kernel\Exceptions\NotFoundException;
 use PlugHacker\PlugCore\Kernel\Services\LocalizationService;
 use PlugHacker\PlugCore\Kernel\Services\LogService;
+use PlugHacker\PlugCore\Kernel\ValueObjects\TransactionStatus;
 use PlugHacker\PlugCore\Recurrence\Aggregates\Subscription;
 use PlugHacker\PlugCore\Webhook\Aggregates\Webhook;
 use PlugHacker\PlugCore\Webhook\Exceptions\WebhookHandlerNotFoundException;

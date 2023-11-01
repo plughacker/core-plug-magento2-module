@@ -5,6 +5,7 @@ namespace PlugHacker\PlugCore\Kernel\Interfaces;
 use PlugHacker\PlugCore\Kernel\ValueObjects\Id\OrderId;
 use PlugHacker\PlugCore\Kernel\ValueObjects\OrderState;
 use PlugHacker\PlugCore\Kernel\ValueObjects\OrderStatus;
+use PlugHacker\PlugCore\Payment\Aggregates\CartItems;
 use PlugHacker\PlugCore\Payment\Aggregates\Customer;
 use PlugHacker\PlugCore\Payment\Aggregates\Item;
 use PlugHacker\PlugCore\Payment\Aggregates\Payments\AbstractPayment;
@@ -97,7 +98,7 @@ interface PlatformOrderInterface
     /** @return AbstractPayment[] */
     public function getPaymentMethodCollection();
     /** @return null|Shipping */
-    public function getShipping();
+    public function getShippingAddress();
 
     /** @since  1.6.5 */
     public function getTotalCanceled();
@@ -119,4 +120,9 @@ interface PlatformOrderInterface
      * @return string
      */
     public function getStatusLabel(OrderStatus $orderStatus);
+
+    /**
+     * @return CartItems[]
+     */
+    public function getCartItems();
 }

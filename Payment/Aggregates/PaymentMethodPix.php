@@ -49,7 +49,7 @@ final class PaymentMethodPix extends AbstractEntity implements ConvertibleToSDKR
         $this->expiresIn = $expiresIn;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $obj = new \stdClass();
         $obj->paymentType = $this->paymentType;

@@ -406,7 +406,7 @@ final class Charge extends AbstractEntity implements ChargeInterface
         ];
 
         foreach ($transactions as $transaction) {
-            if ($transaction->getStatus()->equals(TransactionStatus::captured())) {
+            if ($transaction->getStatus()->equals(TransactionStatus::capture())) {
                 $NSU['captured'] = $transaction->getAcquirerNsu();
                 continue;
             }
@@ -456,7 +456,7 @@ final class Charge extends AbstractEntity implements ChargeInterface
      * which is a value of any type other than a resource.
      * @since  5.4.0
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $obj = new \stdClass();
 

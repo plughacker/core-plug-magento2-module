@@ -6,10 +6,15 @@ use PlugHacker\PlugCore\Kernel\Abstractions\AbstractValueObject;
 
 final class TransactionStatus extends AbstractValueObject
 {
-    const CAPTURED = "captured";
+    const PENDING = 'pending';
+    const PRE_AUTHORIZED = 'pre_authorized';
+    const AUTHORIZED = 'authorized';
+    const CAPTURE = "capture";
     const PARTIAL_CAPTURE = "partial_capture";
     const AUTHORIZED_PENDING_CAPTURE = 'authorized_pending_capture';
     const VOIDED = 'voided';
+
+    const CHARGED_BACK = 'charged_back';
     const REFUNDED = 'refunded';
     const PARTIAL_VOID = 'partial_void';
     const WITH_ERROR = 'withError';
@@ -28,6 +33,7 @@ final class TransactionStatus extends AbstractValueObject
     const PENDING_REVIEW = 'pending_review';
     const ANALYZING = 'analyzing';
     const WAITING_CAPTURE = 'waiting_capture';
+    const CANCELED = 'canceled';
 
     /**
      *
@@ -55,9 +61,24 @@ final class TransactionStatus extends AbstractValueObject
         return new self(self::PARTIAL_CAPTURE);
     }
 
-    public static function captured()
+    public static function pending()
     {
-        return new self(self::CAPTURED);
+        return new self(self::PENDING);
+    }
+
+    public static function preAuthorized()
+    {
+        return new self(self::AUTHORIZED);
+    }
+
+    public static function authorized()
+    {
+        return new self(self::AUTHORIZED);
+    }
+
+    public static function capture()
+    {
+        return new self(self::CAPTURE);
     }
 
     public static function authorizedPendingCapture()
@@ -68,6 +89,11 @@ final class TransactionStatus extends AbstractValueObject
     public static function voided()
     {
         return new self(self::VOIDED);
+    }
+
+    public static function chargedBack()
+    {
+        return new self(self::CHARGED_BACK);
     }
 
     public static function partialVoid()
@@ -150,6 +176,10 @@ final class TransactionStatus extends AbstractValueObject
         return new self(self::WAITING_CAPTURE);
     }
 
+    public static function canceled()
+    {
+        return new self(self::CANCELED);
+    }
 
     /**
      *
@@ -191,7 +221,7 @@ final class TransactionStatus extends AbstractValueObject
      * which is a value of any type other than a resource.
      * @since  5.4.0
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->status;
     }

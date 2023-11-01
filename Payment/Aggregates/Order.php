@@ -42,6 +42,8 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
     /** @var boolean */
     private $antifraudEnabled;
 
+    private $cart;
+
     public function __construct()
     {
         $this->payments = [];
@@ -310,7 +312,7 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $obj = new \stdClass();
 
@@ -339,6 +341,12 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
         $orderRequest->amount = $this->getAmount();
         $orderRequest->statementDescriptor = $this->getStatementDescriptor();
         $orderRequest->orderId = $this->getOrderId();
+        $orderRequest->appInfo = $this->getAppInfo();
+
+        $fraudAnalysis = new FraudAnalysis();
+
+        $orderRequest->fraudAnalysis = $fraudAnalysis->convertToSDKRequest();
+
         // $orderRequest->customer = $this->getCustomer()->convertToSDKRequest();
 
         $orderRequestPayments = [];
@@ -366,6 +374,25 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
         return $orderRequest;
     }
 
+    private function getAppInfo(): array
+    {
+        return [
+            'platform' => [
+                'integrator' => 'malga',
+                'name' => 'magento',
+                'version' => '1.0'
+            ],
+            'device' => [
+                'name' => str_replace('"', '', (string)$_SERVER['HTTP_SEC_CH_UA_PLATFORM']),
+                'version' => (string)$_SERVER['HTTP_USER_AGENT']
+            ],
+            'system' => [
+                'name' => 'magento',
+                'version' => '1.0'
+            ]
+        ];
+    }
+
     private function creditcardPaymentMethod()
     {
         return PaymentMethod::credit_card();
@@ -381,4 +408,17 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
         return PaymentMethod::pix();
     }
 
+    public function getCart()
+    {
+        return $this->cart;
+    }
+
+    /**
+     * @param CartItems[] $cart
+     * @return void
+     */
+    public function setCart($cart): void
+    {
+        $this->cart = $cart;
+    }
 }

@@ -7,6 +7,7 @@ use PlugHacker\PlugCore\Kernel\Abstractions\AbstractEntity;
 use PlugHacker\PlugCore\Payment\Interfaces\ConvertibleToSDKRequestsInterface;
 use PlugHacker\PlugCore\Payment\Interfaces\HaveOrderInterface;
 use PlugHacker\PlugCore\Payment\Traits\WithAmountTrait;
+use PlugHacker\PlugCore\Payment\Traits\WithCartItemsTrait;
 use PlugHacker\PlugCore\Payment\Traits\WithCustomerTrait;
 use PlugHacker\PlugCore\Payment\Traits\WithOrderTrait;
 
@@ -15,10 +16,11 @@ abstract class AbstractPayment
     implements ConvertibleToSDKRequestsInterface, HaveOrderInterface
 {
     use WithAmountTrait;
+    use WithCartItemsTrait;
     use WithCustomerTrait;
     use WithOrderTrait;
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $obj = new \stdClass();
 
