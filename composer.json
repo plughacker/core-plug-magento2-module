@@ -1,7 +1,7 @@
 {
     "name": "plughacker/magento2-core",
     "license": "MIT",
-    "version": "1.0.2",
+    "version": "1.1.0",
     "type": "magento2-module",
     "description": "Magento 2 Module Core Plug",
     "minimum-stability": "dev",
