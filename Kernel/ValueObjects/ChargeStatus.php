@@ -8,12 +8,16 @@ final class ChargeStatus extends AbstractValueObject
 {
     const PAID = 'paid';
     const PENDING = 'pending';
+    const AUTHORIZED = 'authorized';
+    const PRE_AUTHORIZED = 'pre_authorized';
+    const CAPTURE = 'capture';
     const CANCELED = 'canceled';
     const PROCESSING = 'processing';
     const FAILED = 'failed';
 
     const UNDERPAID = 'underpaid';
     const OVERPAID = 'overpaid';
+    const VOIDED = 'voided';
 
     /**
      *
@@ -38,7 +42,17 @@ final class ChargeStatus extends AbstractValueObject
 
     static public function authorization()
     {
-        return new self(self::PAID);
+        return new self(self::AUTHORIZATION);
+    }
+
+    static public function authorized()
+    {
+        return new self(self::AUTHORIZED);
+    }
+
+    static public function preAuthorized()
+    {
+        return new self(self::PRE_AUTHORIZED);
     }
 
     static public function pending()
@@ -111,7 +125,7 @@ final class ChargeStatus extends AbstractValueObject
      * which is a value of any type other than a resource.
      * @since  5.4.0
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->status;
     }

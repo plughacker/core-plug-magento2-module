@@ -127,9 +127,7 @@ class InvoiceService
 
         //todo all the returns of the concrete decorators should be in cents or in
         // classes defined on core.
-        if ($order->getPlatformOrder()->getTotalRefunded() > 0) {
-            $this->createCreditMemo($order->getPlatformOrder());
-        }
+        $this->createCreditMemo($order->getPlatformOrder());
     }
 
     private function createCreditMemo(

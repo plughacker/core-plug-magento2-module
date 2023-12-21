@@ -49,7 +49,7 @@ final class CustomerPaymentSource extends AbstractEntity implements ConvertibleT
         $this->customer = $customer;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $obj = new \stdClass();
         $obj->sourceType = $this->sourceType;

@@ -25,11 +25,13 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
     /** @var CustomerDocument */
     private $document;
 
-    /** @var Address */
-    private $address;
+    private Address $billingAddress;
+
+    private Address $deliveryAddress;
 
     /** @var LocalizationService */
     protected $i18n;
+    private string $registrationDate;
 
     public function __construct()
     {
@@ -133,17 +135,40 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
     /**
      * @return Address
      */
-    public function getAddress()
+    public function getBillingAddress()
     {
-        return $this->address;
+        return $this->billingAddress;
     }
 
     /**
      * @param Address $address
      */
-    public function setAddress(Address $address)
+    public function setBillingAddress(Address $address)
     {
-        $this->address = $address;
+        $this->billingAddress = $address;
+    }
+
+    public function getDeliveryAddress()
+    {
+        return $this->deliveryAddress;
+    }
+
+    /**
+     * @param Address $address
+     */
+    public function setDeliveryAddress(Address $address)
+    {
+        $this->deliveryAddress = $address;
+    }
+
+    public function getRegistrationDate(): string
+    {
+        return $this->registrationDate;
+    }
+
+    public function setRegistrationDate(string $registrationDate): void
+    {
+        $this->registrationDate = $registrationDate;
     }
 
     /**
@@ -153,15 +178,16 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $obj = new \stdClass();
 
         $obj->name = $this->name;
         $obj->email = $this->email;
         $obj->phoneNumber = $this->phoneNumber;
+        $obj->registrationDate = $this->registrationDate;
         $obj->document = $this->document;
-        $obj->address = $this->address;
+        $obj->address = $this->billingAddress;
         $obj->plugId = $this->getPlugId();
 
         return $obj;
@@ -169,12 +195,11 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
 
     public function getAddressToSDK()
     {
-        if ($this->getAddress() !== null) {
-         return $this->getAddress()->convertToSDKRequest();
+        if ($this->getBillingAddress() !== null) {
+         return $this->getBillingAddress()->convertToSDKRequest();
         }
         return null;
     }
-
 
     public function convertToSDKRequest()
     {

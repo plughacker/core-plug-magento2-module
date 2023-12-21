@@ -19,7 +19,7 @@ final class OrderLogService extends LogService
     public function orderException($exception, $orderCode)
     {
         $exceptionMessage = $exception->getMessage();
-        $exceptionMessage = "Order #$orderCode : $exceptionMessage";
+        //$exceptionMessage = "Order #$orderCode : $exceptionMessage";
 
         $reflection = new \ReflectionClass($exception);
         $property = $reflection->getProperty('message');

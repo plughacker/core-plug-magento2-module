@@ -8,9 +8,15 @@ final class OrderStatus extends AbstractValueObject
 {
     const PAID = 'paid';
     const PENDING = 'pending';
+    const PRE_AUTHORIZED = 'pre_authorized';
+    const AUTHORIZED = 'authorized';
     const PROCESSING = 'processing';
     const CANCELED = 'canceled';
+    const CLOSED = 'closed';
     const FAILED = 'failed';
+    const VOIDED = 'voided';
+
+    const CHARGED_BACK = 'charged_back';
 
     /**
      *
@@ -45,12 +51,12 @@ final class OrderStatus extends AbstractValueObject
 
     static public function preAuthorized()
     {
-        return new self(self::PROCESSING);
+        return new self(self::PRE_AUTHORIZED);
     }
 
     static public function authorized()
     {
-        return new self(self::PAID);
+        return new self(self::AUTHORIZED);
     }
 
     static public function pendingPayment()
@@ -63,9 +69,24 @@ final class OrderStatus extends AbstractValueObject
         return new self(self::CANCELED);
     }
 
+    static public function closed()
+    {
+        return new self(self::CLOSED);
+    }
+
     static public function failed()
     {
         return new self(self::FAILED);
+    }
+
+    static public function voided()
+    {
+        return new self(self::VOIDED);
+    }
+
+    static public function chargedBack()
+    {
+        return new self(self::CHARGED_BACK);
     }
 
     /**
@@ -108,7 +129,7 @@ final class OrderStatus extends AbstractValueObject
      * which is a value of any type other than a resource.
      * @since  5.4.0
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->getStatus();
     }

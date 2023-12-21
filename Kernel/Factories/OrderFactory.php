@@ -28,7 +28,14 @@ class OrderFactory implements FactoryInterface
     public function createFromPostData($postData)
     {
         $order = new Order();
-        $status = $postData['status'];
+
+        $baseStatus = explode('_', $postData['status']);
+
+        $status = $baseStatus[0];
+
+        for ($i = 1, $iMax = count($baseStatus); $i < $iMax; $i++) {
+            $status .= ucfirst(($baseStatus[$i]));
+        }
 
         $order->setPlugId(new OrderId($postData['id']));
 
@@ -54,7 +61,7 @@ class OrderFactory implements FactoryInterface
             $charge['order'] = [
                 'id' => $order->getPlugId()->getValue()
             ];
-            $charge['transaction_type'] = $postData['paymentMethod']['paymentType'];
+            $charge['status'] = $postData['status'];
             if (isset($postData['paymentMethod']) && is_array($postData['paymentMethod'])) {
                 $charge = array_merge($charge, $postData['paymentMethod']);
             }
@@ -84,7 +91,14 @@ class OrderFactory implements FactoryInterface
         $order->setId($dbData['id']);
         $order->setPlugId(new OrderId($dbData['plug_id']));
 
-        $status = $dbData['status'];
+        $baseStatus = explode('_', $dbData['status']);
+
+        $status = $baseStatus[0];
+
+        for ($i = 1, $iMax = count($baseStatus); $i < $iMax; $i++) {
+            $status .= ucfirst(($baseStatus[$i]));
+        }
+
         try {
             OrderStatus::$status();
         } catch (Throwable $e) {
@@ -140,7 +154,7 @@ class OrderFactory implements FactoryInterface
 
         $baseStatus = explode('_', $platformOrder->getStatus());
         $status = $baseStatus[0];
-        for ($i = 1; $i < count($baseStatus); $i++) {
+        for ($i = 1, $iMax = count($baseStatus); $i < $iMax; $i++) {
             $status .= ucfirst(($baseStatus[$i]));
         }
 

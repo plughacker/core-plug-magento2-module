@@ -446,6 +446,11 @@ final class Configuration extends AbstractEntity
         return $this->antifraudEnabled;
     }
 
+    public function getAntifraudEnabled(): bool
+    {
+        return $this->antifraudEnabled;
+    }
+
     /**
      * @param bool $antifraudEnabled
      */
@@ -457,7 +462,7 @@ final class Configuration extends AbstractEntity
     /**
      * @return int
      */
-    protected function getAntifraudMinAmount()
+    public function getAntifraudMinAmount(): int
     {
         return $this->antifraudMinAmount;
     }
@@ -649,7 +654,7 @@ final class Configuration extends AbstractEntity
      * which is a value of any type other than a resource.
      * @since  5.4.0
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return [
             "enabled" => $this->enabled,

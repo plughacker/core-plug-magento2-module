@@ -114,6 +114,11 @@ final class PaymentFactory
         $payment->setAmount($this->getAmountWithInterestForCreditCard($payment, $config));
         $payment->setCapture($config->isCapture());
         $payment->setStatementDescriptor($config->getCardStatementDescriptor());
+        $payment->setFraudAnalysis(false);
+
+        if ($config->getAntifraudEnabled() && $payment->getAmount() >= $config->getAntifraudMinAmount()) {
+            $payment->setFraudAnalysis(true);
+        }
 
         return $payment;
     }
